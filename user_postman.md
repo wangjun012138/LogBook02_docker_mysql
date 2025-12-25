@@ -181,7 +181,7 @@
 
 * **功能**: 查看具体内容。
 * **Method**: `GET`
-* **URL**: `http://localhost:8080/api/share/1`  (ID 为存证 ID)
+* **URL**: `http://localhost:8080/api/share/detail/1`  (ID 为存证 ID)
 
 ---
 
