@@ -81,21 +81,45 @@
 * **Method**: `GET`
 * **URL**: `http://localhost:8080/api/proof/list`
 
-### 6. 分享文本 (User A -> User B)
+📝 Postman 测试流程 (新功能)
+1. 分享给用户 (带时效)
+URL: POST /api/share/to-user
 
-* **功能**: 将 ID 为 1 的存证分享给用户 `user_b`（注意：此时 `user_b` 最好已经在数据库里，建议先暂停 A 的操作，去跑一遍 B 的注册流程，或者先假定 B 已存在）。
-* **Method**: `POST`
-* **URL**: `http://localhost:8080/api/share/to-user`
-* **Body** (JSON):
-```json
+Body:
+
+JSON
+
 {
     "proofId": 1,
-    "targetUsername": "user_b"
+    "targetUsername": "user_b",
+    "validMinutes": 5  // 5分钟有效，传 null 为永久
 }
+2. 生成分享链接 (带时效)
+URL: POST /api/share/create-link
 
-```
+Body:
 
+JSON
 
+{
+    "proofId": 1,
+    "validMinutes": 60 // 1小时有效
+}
+Response: data 字段会返回一个 Token，例如 abc12345...
+
+3. 访问链接 (User B 或 游客)
+URL: GET /api/share/view-link?token=abc12345...
+
+预期:
+
+时间如在 60 分钟内：返回存证内容。
+
+时间超过 60 分钟：返回 "链接已过期"。
+
+4. 撤销/后悔了 (User A)
+URL: POST /api/share/revoke/link?token=abc12345...
+
+预期: 再次访问上面的 view-link 接口，会提示 "链接已失效（被撤销）"。
 
 ### 7. 登出 (User A)
 
